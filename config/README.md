@@ -26,8 +26,7 @@ rstdev-config = {version = "0.1.0"}
 use serde::Deserialize;
 
 use rstdev_config::{Builder, ConfigError};
-use rstdev_config::source::{from_file, from_env, from_svc};
-use rstdev_config::source::svc::vault::{Config as VaultConfig, Vault};
+use rstdev_config::source::{from_file, from_env};
 
 #[derive(Deserialize)]
 struct Config {
@@ -38,9 +37,5 @@ fn main() -> Result<(), ConfigError> {
     let cfg_file_path = "./test.toml";
     let cfg_file: Config = Builder::new(from_file(cfg_file_path)).fetch()?.as_toml()?;
     let cfg_env: Config = Builder::new(from_env("PREFIX")).fetch()?.as_env()?;
-
-    let cfg_vault = VaultConfig::default();
-    let vault = Vault::new(cfg_vault);
-    let cfg_svc: Config = Builder::new(from_svc(vault)).fetch()?.as_yaml()?;
 }
 ```
