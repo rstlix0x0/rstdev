@@ -37,6 +37,18 @@ mod tests {
     struct Message {
         message: String,
     }
+    
+    #[derive(Serialize, Deserialize, Debug)]
+    struct MessageGroup {
+        message: String,
+        keys: MessageGroupKeys
+    }
+
+    #[derive(Serialize, Deserialize, Debug)]
+    struct MessageGroupKeys {
+        key1: String,
+        key2: String
+    }
 
     #[test]
     fn test_parse_config_yaml() -> Result<(), ConfigError> {
@@ -49,6 +61,38 @@ mod tests {
             .as_yaml()?;
 
         assert_eq!(cfg.message, "hello world");
+        Ok(())
+    }
+
+    #[test]
+    fn test_parse_config_toml() -> Result<(), ConfigError> {
+        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        path.push("fixtures");
+
+        let toml_file = format!("{}/test.toml", path.display());
+        let cfg: MessageGroup = Builder::new(from_file(toml_file))
+            .fetch()?
+            .as_toml()?;
+
+        assert_eq!(cfg.message, "hello world");
+        assert_eq!(cfg.keys.key1, "value1");
+        assert_eq!(cfg.keys.key2, "value2");
+        Ok(())
+    }
+
+    #[test]
+    fn test_parse_config_json() -> Result<(), ConfigError> {
+        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        path.push("fixtures");
+
+        let json_file = format!("{}/test.json", path.display());
+        let cfg: MessageGroup = Builder::new(from_file(json_file))
+            .fetch()?
+            .as_json()?;
+
+        assert_eq!(cfg.message, "hello world");
+        assert_eq!(cfg.keys.key1, "value1");
+        assert_eq!(cfg.keys.key2, "value2");
         Ok(())
     }
 }
