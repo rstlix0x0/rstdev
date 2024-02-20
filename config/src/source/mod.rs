@@ -5,7 +5,6 @@ mod file;
 
 /// `from_file` used to build `File` adapter which is an adapter that read
 /// configuration from a physical file.
-///
 pub fn from_file(filepath: String) -> file::File {
     file::File::new(filepath)
 }
