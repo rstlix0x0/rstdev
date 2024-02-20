@@ -1,11 +1,19 @@
 use serde_yaml;
 use toml;
 
-use rst_common::standard::serde::{Deserialize, de::DeserializeOwned};
+use rst_common::standard::serde::{de::DeserializeOwned, Deserialize};
 use rst_common::standard::serde_json;
 
 use crate::types::ConfigError;
 
+/// Format is a object wrapper of given input as a string value
+///
+/// This object used to parse given string based on their original format.
+/// Available format:
+///
+/// - YAML
+/// - TOML
+/// - JSON
 pub struct Format {
     input: String,
 }
@@ -23,11 +31,17 @@ impl<'a> Format {
             .map_err(|err| ConfigError::FormatError(err.to_string()))
     }
 
-    pub fn as_toml<T>(&'a self) -> Result<T, ConfigError> where T: DeserializeOwned {
+    pub fn as_toml<T>(&'a self) -> Result<T, ConfigError>
+    where
+        T: DeserializeOwned,
+    {
         toml::from_str(&self.input).map_err(|err| ConfigError::FormatError(err.to_string()))
     }
 
-    pub fn as_json<T>(&'a self) -> Result<T, ConfigError> where T: DeserializeOwned {
+    pub fn as_json<T>(&'a self) -> Result<T, ConfigError>
+    where
+        T: DeserializeOwned,
+    {
         serde_json::from_str(&self.input).map_err(|err| ConfigError::FormatError(err.to_string()))
     }
 }
@@ -77,8 +91,8 @@ mod tests {
 
     #[test]
     fn test_fetch_as_toml() {
-        let input = Message{
-            msg: "hello world".to_string()
+        let input = Message {
+            msg: "hello world".to_string(),
         };
 
         let toml_str = toml::to_string(&input);
@@ -97,7 +111,7 @@ mod tests {
         };
         let str = serde_yaml::to_string(&msg);
         assert!(!str.is_err());
-        
+
         let format = Format::new(str.unwrap());
         let output: Result<MessageInvalid, ConfigError> = format.as_toml();
         assert!(output.is_err());
@@ -106,13 +120,13 @@ mod tests {
 
     #[test]
     fn test_fetch_as_json() {
-        let input = Message{
-            msg: "hello world".to_string()
+        let input = Message {
+            msg: "hello world".to_string(),
         };
 
         let json_str = serde_json::to_string(&input);
         assert!(!json_str.is_err());
-        
+
         let format = Format::new(json_str.unwrap());
         let output: Result<Message, ConfigError> = format.as_json();
         assert!(!output.is_err());
@@ -125,7 +139,7 @@ mod tests {
         };
         let str = serde_json::to_string(&msg);
         assert!(!str.is_err());
-        
+
         let format = Format::new(str.unwrap());
         let output: Result<MessageInvalid, ConfigError> = format.as_json();
         assert!(output.is_err());

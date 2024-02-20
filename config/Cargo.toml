@@ -17,8 +17,11 @@ rst-common = {version = "1.1", features = ["with-errors"]}
 thiserror = {version = "~1"}
 envy = {version = "0.4"}
 toml = {version = "0.8"}
-serde = {version = "1.0.196", features = ["derive"]}
+serde = {version = "1.0", features = ["derive"]}
 serde_yaml = {version = "0.9"}
 
 [dev-dependencies]
 rst-common = {version = "1.1", features = ["with-tests"]}
+
+[lib]
+doctest = false
