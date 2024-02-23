@@ -49,14 +49,16 @@ impl<'a> Format {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use rst_common::standard::serde::{Deserialize, Serialize};
+    use rst_common::standard::serde::{self, Serialize, Deserialize};
 
-    #[derive(Serialize, Deserialize)]
+    #[derive(Debug, Serialize, Deserialize)]
+    #[serde(crate = "self::serde")]
     struct Message {
         msg: String,
     }
 
     #[derive(Serialize, Deserialize, Debug)]
+    #[serde(crate = "self::serde")]
     struct MessageInvalid {
         msg2: String,
     }

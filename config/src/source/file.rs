@@ -27,10 +27,11 @@ impl SourceParser for File {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use rst_common::standard::serde::{Deserialize, Serialize};
+    use rst_common::standard::serde::{self, Deserialize, Serialize};
     use std::path::PathBuf;
 
     #[derive(Serialize, Deserialize, Debug)]
+    #[serde(crate = "self::serde")]
     struct Message {
         message: String,
     }

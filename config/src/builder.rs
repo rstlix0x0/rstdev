@@ -33,27 +33,30 @@ where
         self.adapter.fetch()
     }
 }
-
+    
 #[cfg(test)]
 mod tests {
     use super::*;
     use std::path::PathBuf;
     use crate::source::from_file;
     
-    use rst_common::standard::serde::{Deserialize, Serialize};
+    use rst_common::standard::serde::{self, Deserialize, Serialize};
 
     #[derive(Serialize, Deserialize, Debug)]
+    #[serde(crate = "self::serde")]
     struct Message {
         message: String,
     }
     
     #[derive(Serialize, Deserialize, Debug)]
+    #[serde(crate = "self::serde")]
     struct MessageGroup {
         message: String,
         keys: MessageGroupKeys
     }
 
     #[derive(Serialize, Deserialize, Debug)]
+    #[serde(crate = "self::serde")]
     struct MessageGroupKeys {
         key1: String,
         key2: String

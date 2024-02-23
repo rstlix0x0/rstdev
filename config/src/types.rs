@@ -1,4 +1,4 @@
-use rst_common::with_errors::thiserror::Error;
+use rst_common::with_errors::thiserror::{self, Error};
 
 use crate::format::Format;
 
