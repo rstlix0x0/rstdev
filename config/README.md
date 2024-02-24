@@ -5,7 +5,7 @@ from multiple source and multiple format types
 
 The main purpose of this library to help engineers to maintain their configuration
 data. To give flexibility to engineers, it will provide a public trait (interface)
-[`SourceParser`] so they should be able to create their own source adapter based on their needs
+[`types::SourceParser`] so they should be able to create their own source adapter based on their needs
 
 This library also provide an implementation of [`Format`] that will be able to parse given configuration.
 Current supported format types:

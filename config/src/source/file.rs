@@ -1,7 +1,7 @@
 use std::fs;
 
 use crate::types::{ConfigError, SourceParser};
-use crate::Format;
+use crate::{Format, StringValue};
 
 /// File is an adapter that will fetch the configuration as a string
 /// from a given input file path
@@ -15,12 +15,12 @@ impl File {
     }
 }
 
-impl SourceParser for File {
-    fn fetch(&self) -> Result<Format, ConfigError> {
+impl SourceParser<StringValue> for File {
+    fn fetch(&self) -> Result<Format<StringValue>, ConfigError> {
         let content = fs::read_to_string(self.filepath.clone())
             .map_err(|err| ConfigError::ParseError(err.to_string()))?;
 
-        Ok(Format::new(content))
+        Ok(Format::new(StringValue::new(content)))
     }
 }
 
@@ -46,8 +46,8 @@ mod tests {
         let output = source_file.fetch();
         assert!(!output.is_err());
 
-        let yaml: Result<Message, ConfigError> = output.unwrap().as_yaml();
-        assert!(!yaml.is_err());
-        assert_eq!("hello world".to_string(), yaml.unwrap().message)
+        let yaml: Option<Result<Message, ConfigError>> = output.unwrap().as_yaml();
+        assert!(yaml.is_some());
+        assert_eq!("hello world".to_string(), yaml.unwrap().unwrap().message)
     }
 }

@@ -1,4 +1,7 @@
-use rst_common::with_errors::thiserror::{self, Error};
+use rst_common::{
+    standard::serde::{de::DeserializeOwned, Deserialize},
+    with_errors::thiserror::{self, Error},
+};
 
 use crate::format::Format;
 
@@ -20,9 +23,37 @@ pub enum ConfigError {
     ParseError(String),
 }
 
+/// ConfigFormatter is a public interface / trait that must be implemented
+/// by all source value.
+///
+/// Before this trait exists, the formatter value by default is `String`.
+/// The problem begins when we're try to use other format like `std::env::vars()`
+/// that give us an iterator of key and value in string.
+///
+/// That's why rather than depends on single hardcoded value (`String`), it will be better to design the config
+/// value itself based on this trait. Each of value must be implement this trait and provide
+/// all source types including `as_env`.
+pub trait ConfigFormatter<'a> {
+    fn as_yaml<T>(&'a self) -> Option<Result<T, ConfigError>>
+    where
+        T: Deserialize<'a>;
+    fn as_toml<T>(&'a self) -> Option<Result<T, ConfigError>>
+    where
+        T: DeserializeOwned;
+    fn as_json<T>(&'a self) -> Option<Result<T, ConfigError>>
+    where
+        T: DeserializeOwned;
+    fn as_env<T>(&'a self) -> Option<Result<T, ConfigError>>
+    where
+        T: DeserializeOwned;
+}
+
 /// SourceParser is a public interface / trait that must be
 /// implemented by any adapters that need to parse config as
 /// a string from some source, like file, env vars or others
-pub trait SourceParser {
-    fn fetch(&self) -> Result<Format, ConfigError>;
+pub trait SourceParser<T>
+where
+    T: for<'a> ConfigFormatter<'a>,
+{
+    fn fetch(&self) -> Result<Format<T>, ConfigError>;
 }
