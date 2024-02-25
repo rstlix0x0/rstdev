@@ -1,6 +1,6 @@
 use std::marker::PhantomData;
 
-use crate::types::{ConfigError, ConfigFormatter, SourceParser};
+use crate::types::{ConfigError, SourceFormatter, SourceParser};
 use crate::Source;
 
 /// Builder is a main object used to manage multiple source parser
@@ -17,28 +17,32 @@ use crate::Source;
 ///  .fetch()?
 ///  .as_yaml()?;
 /// ```
-pub struct Builder<T, F>
+pub struct Builder<TParser, TFormatter, TValue>
 where
-    F: for<'a> ConfigFormatter<'a>,
-    T: for<'a> SourceParser<F>,
+    TValue: Clone,
+    TFormatter: for<'a> SourceFormatter<'a, TValue>,
+    TParser: for<'a> SourceParser<TFormatter, TValue>,
 {
-    adapter: T,
-    _phantomf: Option<PhantomData<F>>,
+    adapter: TParser,
+    _phantomf: Option<PhantomData<TFormatter>>,
+    _phantomf2: Option<PhantomData<TValue>>,
 }
 
-impl<T, F> Builder<T, F>
+impl<T, F, St> Builder<T, F, St>
 where
-    F: for<'a> ConfigFormatter<'a>,
-    T: for<'a> SourceParser<F>,
+    St: Clone,
+    F: for<'a> SourceFormatter<'a, St>,
+    T: for<'a> SourceParser<F, St>,
 {
     pub fn new(adapter: T) -> Self {
         Self {
             adapter,
             _phantomf: None,
+            _phantomf2: None,
         }
     }
 
-    pub fn fetch(&self) -> Result<Source<F>, ConfigError> {
+    pub fn fetch(&self) -> Result<Source<F, St>, ConfigError> {
         self.adapter.fetch()
     }
 }
@@ -46,10 +50,12 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::sourcetype::from_file;
     use std::path::PathBuf;
 
     use rst_common::standard::serde::{self, Deserialize, Serialize};
+
+    use crate::format::{from_toml, from_yaml, from_json};
+    use crate::parser::from_file;
 
     #[derive(Serialize, Deserialize, Debug, Clone)]
     #[serde(crate = "self::serde")]
@@ -72,47 +78,48 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_config_yaml() -> Result<(), ConfigError> {
-        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        path.push("fixtures");
-
-        let yaml_file = format!("{}/test.yaml", path.display());
-        let cfg: Option<Result<Message, ConfigError>> =
-            Builder::new(from_file(yaml_file)).fetch()?.as_yaml();
-
-        assert_eq!(cfg.unwrap().unwrap().message, "hello world");
-        Ok(())
-    }
-
-    #[test]
-    fn test_parse_config_toml() -> Result<(), ConfigError> {
+    fn test_parser_file_toml() -> Result<(), ConfigError> {
         let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
         path.push("fixtures");
 
         let toml_file = format!("{}/test.toml", path.display());
-        let cfg: Option<Result<MessageGroup, ConfigError>> =
-            Builder::new(from_file(toml_file)).fetch()?.as_toml();
+        let cfg: MessageGroup = Builder::new(from_file(toml_file))
+            .fetch()?
+            .parse(from_toml)?;
 
-        let resp = cfg.unwrap().unwrap();
-        assert_eq!(resp.clone().message, "hello world");
-        assert_eq!(resp.clone().keys.key1, "value1");
-        assert_eq!(resp.clone().keys.key2, "value2");
+        assert_eq!(cfg.clone().message, "hello world");
+        assert_eq!(cfg.clone().keys.key1, "value1");
+        assert_eq!(cfg.clone().keys.key2, "value2");
         Ok(())
     }
 
     #[test]
-    fn test_parse_config_json() -> Result<(), ConfigError> {
+    fn test_parser_file_yaml() -> Result<(), ConfigError> {
         let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
         path.push("fixtures");
 
-        let json_file = format!("{}/test.json", path.display());
-        let cfg: Option<Result<MessageGroup, ConfigError>> =
-            Builder::new(from_file(json_file)).fetch()?.as_json();
+        let yaml_file = format!("{}/test.yaml", path.display());
+        let cfg: Message = Builder::new(from_file(yaml_file))
+            .fetch()?
+            .parse(from_yaml)?;
 
-        let resp = cfg.unwrap().unwrap();
-        assert_eq!(resp.clone().message, "hello world");
-        assert_eq!(resp.clone().keys.key1, "value1");
-        assert_eq!(resp.clone().keys.key2, "value2");
+        assert_eq!(cfg.clone().message, "hello world");
+        Ok(())
+    }
+
+    #[test]
+    fn test_parser_file_json() -> Result<(), ConfigError> {
+        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        path.push("fixtures");
+        
+        let json_file = format!("{}/test.json", path.display());
+        let cfg: MessageGroup = Builder::new(from_file(json_file))
+            .fetch()?
+            .parse(from_json)?;
+
+        assert_eq!(cfg.clone().message, "hello world");
+        assert_eq!(cfg.clone().keys.key1, "value1");
+        assert_eq!(cfg.clone().keys.key2, "value2");
         Ok(())
     }
 }

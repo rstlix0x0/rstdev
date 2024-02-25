@@ -1,12 +1,12 @@
 #![doc = include_str!("../README.md")]
 
-pub mod sourcetype;
+pub mod format;
+pub mod parser;
 pub mod types;
+pub mod values;
 
 mod builder;
 mod source;
-mod formatter;
 
 pub use builder::Builder;
 pub use source::Source;
-pub use formatter::StringValue;

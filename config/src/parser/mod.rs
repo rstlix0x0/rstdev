@@ -1,4 +1,4 @@
-//! A `sourcetype` module used to store multiple implementation of `SourceParser`
+//! A `parser` module used to store multiple implementation of `SourceParser`
 //!
 //! We just prevent to re-export all source adapter implementer to simplify our `Builder`
 mod file;
