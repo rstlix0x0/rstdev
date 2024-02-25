@@ -3,7 +3,7 @@ use rst_common::{
     with_errors::thiserror::{self, Error},
 };
 
-use crate::format::Format;
+use crate::source::Source;
 
 /// ConfigError is a custom internal error that will be used
 /// when parsing of fetching data format
@@ -55,5 +55,5 @@ pub trait SourceParser<T>
 where
     T: for<'a> ConfigFormatter<'a>,
 {
-    fn fetch(&self) -> Result<Format<T>, ConfigError>;
+    fn fetch(&self) -> Result<Source<T>, ConfigError>;
 }

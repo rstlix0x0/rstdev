@@ -1,7 +1,7 @@
 use std::marker::PhantomData;
 
 use crate::types::{ConfigError, ConfigFormatter, SourceParser};
-use crate::Format;
+use crate::Source;
 
 /// Builder is a main object used to manage multiple source parser
 ///
@@ -38,7 +38,7 @@ where
         }
     }
 
-    pub fn fetch(&self) -> Result<Format<F>, ConfigError> {
+    pub fn fetch(&self) -> Result<Source<F>, ConfigError> {
         self.adapter.fetch()
     }
 }
@@ -46,7 +46,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::source::from_file;
+    use crate::sourcetype::from_file;
     use std::path::PathBuf;
 
     use rst_common::standard::serde::{self, Deserialize, Serialize};

@@ -1,7 +1,7 @@
 use std::fs;
 
 use crate::types::{ConfigError, SourceParser};
-use crate::{Format, StringValue};
+use crate::{Source, StringValue};
 
 /// File is an adapter that will fetch the configuration as a string
 /// from a given input file path
@@ -16,11 +16,11 @@ impl File {
 }
 
 impl SourceParser<StringValue> for File {
-    fn fetch(&self) -> Result<Format<StringValue>, ConfigError> {
+    fn fetch(&self) -> Result<Source<StringValue>, ConfigError> {
         let content = fs::read_to_string(self.filepath.clone())
             .map_err(|err| ConfigError::ParseError(err.to_string()))?;
 
-        Ok(Format::new(StringValue::new(content)))
+        Ok(Source::new(StringValue::new(content)))
     }
 }
 

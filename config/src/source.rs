@@ -14,14 +14,14 @@ use crate::types::{ConfigError, ConfigFormatter};
 ///
 /// This struct object already been refactored to accept any input source
 /// that implement [`ConfigFormatter`]
-pub struct Format<T>
+pub struct Source<T>
 where
     T: for<'a> ConfigFormatter<'a>,
 {
     input: T,
 }
 
-impl<T> Format<T>
+impl<T> Source<T>
 where
     T: for<'a> ConfigFormatter<'a>,
 {
