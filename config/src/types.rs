@@ -30,7 +30,7 @@ pub enum ConfigError {
 ///
 /// That's why rather than depends on single hardcoded value (`String`), it will be better to design the config
 /// value itself based on this trait.
-pub trait SourceFormatter<'a, TValue>: Clone {
+pub trait SourceFormatter<'a, TValue> {
     fn get_source_value(&'a self) -> TValue;
 }
 
@@ -39,7 +39,6 @@ pub trait SourceFormatter<'a, TValue>: Clone {
 /// a string from some source, like file, env vars or others
 pub trait SourceParser<TFormatter, TValue>
 where
-    TValue: Clone,
     TFormatter: for<'a> SourceFormatter<'a, TValue>,
 {
     fn fetch(&self) -> Result<Source<TFormatter, TValue>, ConfigError>;

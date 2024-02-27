@@ -15,10 +15,10 @@ use crate::types::{ConfigError, SourceFormatter};
 /// designed to make this object become modular, by separating between the object with
 /// its specific type parser.
 ///
-/// By using this approach, user will be able to create a custom source type parser based on their needs 
+/// By using this approach, user will be able to create a custom source type parser based on their needs
+#[derive(Debug)]
 pub struct Source<TFormatter, TValue>
 where
-    TValue: Clone,
     TFormatter: for<'a> SourceFormatter<'a, TValue>,
 {
     input: TFormatter,
@@ -49,14 +49,16 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::env;
+
     use serde_yaml;
     use toml;
 
     use rst_common::standard::serde::{self, Deserialize, Serialize};
     use rst_common::standard::serde_json;
 
-    use crate::format::{from_toml, from_yaml, from_json};
-    use crate::values::StringValue;
+    use crate::format::{use_env, use_json, use_toml, use_yaml};
+    use crate::values::{StringValue, TupleValue};
 
     #[derive(Debug, Serialize, Deserialize)]
     #[serde(crate = "self::serde")]
@@ -75,7 +77,7 @@ mod tests {
 
         let input_value = StringValue::new(toml_str.unwrap());
         let source = Source::new(input_value);
-        let out: Result<Message, ConfigError> = source.parse(from_toml);
+        let out: Result<Message, ConfigError> = source.parse(use_toml);
         assert!(!out.is_err());
         assert_eq!("hello world".to_string(), out.unwrap().msg)
     }
@@ -91,7 +93,7 @@ mod tests {
 
         let input_value = StringValue::new(yaml_str.unwrap());
         let source = Source::new(input_value);
-        let out: Result<Message, ConfigError> = source.parse(from_yaml);
+        let out: Result<Message, ConfigError> = source.parse(use_yaml);
         assert!(!out.is_err());
         assert_eq!("hello world".to_string(), out.unwrap().msg)
     }
@@ -107,7 +109,25 @@ mod tests {
 
         let input_value = StringValue::new(json_str.unwrap());
         let source = Source::new(input_value);
-        let out: Result<Message, ConfigError> = source.parse(from_json);
+        let out: Result<Message, ConfigError> = source.parse(use_json);
+        assert!(!out.is_err());
+        assert_eq!("hello world".to_string(), out.unwrap().msg)
+    }
+
+    #[test]
+    fn test_parse_env() {
+        env::set_var("TEST_MSG", "hello world");
+
+        let vars: Vec<(String, String)> = env::vars().into_iter().collect();
+        let input_source: Vec<(String, String)> = vars
+            .into_iter()
+            .filter(|(key, _)| key.starts_with("TEST_"))
+            .map(|(key, value)| (key.trim_start_matches("TEST_").to_owned(), value))
+            .collect();
+
+        let value = TupleValue::new(input_source);
+        let source = Source::new(value);
+        let out: Result<Message, ConfigError> = source.parse(use_env);
         assert!(!out.is_err());
         assert_eq!("hello world".to_string(), out.unwrap().msg)
     }

@@ -50,12 +50,13 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::env;
     use std::path::PathBuf;
 
     use rst_common::standard::serde::{self, Deserialize, Serialize};
 
-    use crate::format::{from_toml, from_yaml, from_json};
-    use crate::parser::from_file;
+    use crate::format::{use_env, use_json, use_toml, use_yaml};
+    use crate::parser::{from_env, from_file};
 
     #[derive(Serialize, Deserialize, Debug, Clone)]
     #[serde(crate = "self::serde")]
@@ -85,7 +86,7 @@ mod tests {
         let toml_file = format!("{}/test.toml", path.display());
         let cfg: MessageGroup = Builder::new(from_file(toml_file))
             .fetch()?
-            .parse(from_toml)?;
+            .parse(use_toml)?;
 
         assert_eq!(cfg.clone().message, "hello world");
         assert_eq!(cfg.clone().keys.key1, "value1");
@@ -101,7 +102,7 @@ mod tests {
         let yaml_file = format!("{}/test.yaml", path.display());
         let cfg: Message = Builder::new(from_file(yaml_file))
             .fetch()?
-            .parse(from_yaml)?;
+            .parse(use_yaml)?;
 
         assert_eq!(cfg.clone().message, "hello world");
         Ok(())
@@ -111,15 +112,26 @@ mod tests {
     fn test_parser_file_json() -> Result<(), ConfigError> {
         let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
         path.push("fixtures");
-        
+
         let json_file = format!("{}/test.json", path.display());
         let cfg: MessageGroup = Builder::new(from_file(json_file))
             .fetch()?
-            .parse(from_json)?;
+            .parse(use_json)?;
 
         assert_eq!(cfg.clone().message, "hello world");
         assert_eq!(cfg.clone().keys.key1, "value1");
         assert_eq!(cfg.clone().keys.key2, "value2");
+        Ok(())
+    }
+
+    #[test]
+    fn test_parser_env_vars() -> Result<(), ConfigError> {
+        env::set_var("TEST_MESSAGE", "hello world");
+        let cfg: Message = Builder::new(from_env("TEST_".to_string()))
+            .fetch()?
+            .parse(use_env)?;
+
+        assert_eq!(cfg.clone().message, "hello world");
         Ok(())
     }
 }

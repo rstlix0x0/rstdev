@@ -1,8 +1,8 @@
 use std::fs;
 
 use crate::types::{ConfigError, SourceParser};
-use crate::Source;
 use crate::values::StringValue;
+use crate::Source;
 
 /// File is an adapter that will fetch the configuration as a string
 /// from a given input file path

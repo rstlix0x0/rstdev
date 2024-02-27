@@ -12,6 +12,7 @@ Current supported format types:
 - YAML
 - TOML
 - JSON
+- Environment variables data types
 
 ## Installation
 
@@ -25,7 +26,7 @@ rstdev-config = {version = "0.1.0"}
 ```rust
 use serde::Deserialize;
 
-use rstdev_config::format::{from_toml, from_env};
+use rstdev_config::format::{use_toml, use_env};
 use rstdev_config::{Builder, ConfigError};
 use rstdev_config::parser::{from_file, from_env};
 
@@ -36,8 +37,8 @@ struct Config {
 
 fn main() -> Result<(), ConfigError> {
     let cfg_file_path = "./test.toml";
-    let cfg_file: Config = Builder::new(from_file(cfg_file_path)).fetch()?.parse(from_toml)?;
-    let cfg_env: Config = Builder::new(from_env("PREFIX")).fetch()?.parse(from_env)?;
+    let cfg_file: Config = Builder::new(from_file(cfg_file_path)).fetch()?.parse(use_toml)?;
+    let cfg_env: Config = Builder::new(from_env("PREFIX_")).fetch()?.parse(use_env)?;
 }
 ```
 
@@ -124,10 +125,10 @@ where
 }
 ```
 
-the `from_toml`, actually is a callback function that implement `FnOnce(St) -> Result<Out, ConfigError>`:
+the `use_toml`, actually is a callback function that implement `FnOnce(St) -> Result<Out, ConfigError>`:
 
 ```rust
-pub fn from_toml<In, Out>(input: In) -> Result<Out, ConfigError>
+pub fn use_toml<In, Out>(input: In) -> Result<Out, ConfigError>
 where
     In: ToString,
     Out: DeserializeOwned,
