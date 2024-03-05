@@ -3,7 +3,7 @@ use rst_common::with_errors::thiserror::{self, Error};
 
 /// `StorageError` is a list of error types designed specifically
 /// for common storage activities
-#[derive(Debug, Error)]
+#[derive(Debug, Error, PartialEq)]
 pub enum StorageError {
     #[error("storage connection error: {0}")]
     ConnectionError(String),
@@ -16,6 +16,9 @@ pub enum StorageError {
 
     #[error("storage trait not implemented: {0}")]
     MethodNotImplementedError(String),
+
+    #[error("options error: {0}")]
+    BuildOptionsError(String),
 }
 
 /// `Storage` trait is a core abstraction for external storage
