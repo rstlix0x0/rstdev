@@ -1,9 +1,9 @@
-use sqlx::postgres::{Postgres, PgConnectOptions};
 use sqlx::pool::PoolOptions;
+use sqlx::postgres::{PgConnectOptions, Postgres};
 
 use crate::types::StorageError;
 
-use crate::sql::options::{DefaultDBOptions, DefaultDBPoolOptions};
+use crate::sql::options::{DefaultDBOptions, DefaultDBPoolOptions, DefaultDBPoolOptionsBuilder};
 use crate::sql::types::{SqlxOptionsBuilder, SqlxPoolOptionsBuilder};
 
 const DEFAULT_PORT: u16 = 5432;
@@ -15,9 +15,17 @@ pub struct Options {
 }
 
 impl Options {
-    pub fn new(db_opts: DefaultDBOptions, pool_opts: DefaultDBPoolOptions, app_name: Option<String>) -> Result<Self, StorageError> {
+    pub fn new(
+        db_opts: DefaultDBOptions,
+        pool_opts: DefaultDBPoolOptions,
+        app_name: Option<String>,
+    ) -> Result<Self, StorageError> {
         let _ = db_opts.validate()?;
-        Ok(Self { db_opts, pool_opts, app_name }) 
+        Ok(Self {
+            db_opts,
+            pool_opts,
+            app_name,
+        })
     }
 }
 
@@ -49,31 +57,6 @@ impl SqlxPoolOptionsBuilder for Options {
     type SqlxDatabase = Postgres;
 
     fn pool_options(&self) -> PoolOptions<Self::SqlxDatabase> {
-        let mut pg_pool_opts = PoolOptions::<Self::SqlxDatabase>::new();
-        if let Some(max_conns) = &self.pool_opts.max_conns {
-            pg_pool_opts =pg_pool_opts 
-                .clone()
-                .max_connections(max_conns.to_owned());
-        }
-
-        if let Some(min_conns) = &self.pool_opts.min_conns {
-            pg_pool_opts =pg_pool_opts 
-                .clone()
-                .min_connections(min_conns.to_owned());
-        }
-
-        if let Some(idle) = &self.pool_opts.idle_duration {
-            pg_pool_opts = pg_pool_opts.clone().idle_timeout(idle.to_owned());
-        }
-
-        if let Some(lifetime) = &self.pool_opts.lifetime_duration {
-            pg_pool_opts = pg_pool_opts.clone().max_lifetime(lifetime.to_owned());
-        }
-
-        if let Some(acquire) = &self.pool_opts.acquire_timeout {
-            pg_pool_opts = pg_pool_opts.clone().acquire_timeout(acquire.to_owned());
-        }
-
-       pg_pool_opts 
+        DefaultDBPoolOptionsBuilder::<Self::SqlxDatabase>::new(self.pool_opts.to_owned()).build()
     }
 }

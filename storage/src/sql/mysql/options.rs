@@ -3,7 +3,7 @@ use sqlx::pool::PoolOptions;
 
 use crate::types::StorageError;
 
-use crate::sql::options::{DefaultDBOptions, DefaultDBPoolOptions};
+use crate::sql::options::{DefaultDBOptions, DefaultDBPoolOptions, DefaultDBPoolOptionsBuilder};
 use crate::sql::types::{SqlxOptionsBuilder, SqlxPoolOptionsBuilder};
 
 const DEFAULT_PORT: u16 = 3306;
@@ -14,9 +14,12 @@ pub struct Options {
 }
 
 impl Options {
-    pub fn new(db_opts: DefaultDBOptions, pool_opts: DefaultDBPoolOptions) -> Result<Self, StorageError> {
+    pub fn new(
+        db_opts: DefaultDBOptions,
+        pool_opts: DefaultDBPoolOptions,
+    ) -> Result<Self, StorageError> {
         let _ = db_opts.validate()?;
-        Ok(Self { db_opts, pool_opts }) 
+        Ok(Self { db_opts, pool_opts })
     }
 }
 
@@ -44,31 +47,6 @@ impl SqlxPoolOptionsBuilder for Options {
     type SqlxDatabase = MySql;
 
     fn pool_options(&self) -> PoolOptions<Self::SqlxDatabase> {
-        let mut mysql_pool_opts = PoolOptions::<Self::SqlxDatabase>::new();
-        if let Some(max_conns) = &self.pool_opts.max_conns {
-            mysql_pool_opts = mysql_pool_opts
-                .clone()
-                .max_connections(max_conns.to_owned());
-        }
-
-        if let Some(min_conns) = &self.pool_opts.min_conns {
-            mysql_pool_opts = mysql_pool_opts
-                .clone()
-                .min_connections(min_conns.to_owned());
-        }
-
-        if let Some(idle) = &self.pool_opts.idle_duration {
-            mysql_pool_opts = mysql_pool_opts.clone().idle_timeout(idle.to_owned());
-        }
-
-        if let Some(lifetime) = &self.pool_opts.lifetime_duration {
-            mysql_pool_opts = mysql_pool_opts.clone().max_lifetime(lifetime.to_owned());
-        }
-
-        if let Some(acquire) = &self.pool_opts.acquire_timeout {
-            mysql_pool_opts = mysql_pool_opts.clone().acquire_timeout(acquire.to_owned());
-        }
-
-        mysql_pool_opts
+        DefaultDBPoolOptionsBuilder::<Self::SqlxDatabase>::new(self.pool_opts.to_owned()).build()
     }
 }

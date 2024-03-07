@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
 use rst_common::standard::async_trait::async_trait;
-use sqlx::postgres::{Postgres, PgConnection};
 use sqlx::pool::Pool;
+use sqlx::postgres::{PgConnection, Postgres};
 use sqlx::Connection;
 
 use crate::sql::postgresql::options::Options;
