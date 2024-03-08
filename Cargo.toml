@@ -2,7 +2,7 @@
 resolver = "2"
 
 members = [
-    "config",
-    "domain",
-    "storage"
+    "rstdev-config",
+    "rstdev-domain",
+    "rstdev-storage"
 ]
