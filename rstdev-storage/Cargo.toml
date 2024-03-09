@@ -3,21 +3,26 @@ name = "rstdev-storage"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.74" 
-description = "A library to manage data storage for SQL, NoSQL or NewSQL"
+description = "A library to manage external storage database instance and connection"
 license = "Apache-2.0"
 keywords = ["libraries"]
 categories = ["development-tools"]
-repository = "https://github.com/rstlix0x0/rstdev/storage"
+documentation = "https://docs.rs/rstdev-storage"
+repository = "https://github.com/rstlix0x0/rstdev/rstdev-storage"
 readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 rst-common = {version = "1.1", features = ["with-errors", "with-tokio"]}
-sqlx = { version = "0.7", features = [ "runtime-tokio", "mysql", "postgres" ] }
+sqlx = { version = "0.7", features = ["runtime-tokio"] }
 
 [dev-dependencies]
 rst-common = {version = "1.1", features = ["with-tests"]}
+
+[features]
+mysql = ["sqlx/mysql"]
+postgresql = ["sqlx/postgres"]
 
 [lib]
 doctest = false

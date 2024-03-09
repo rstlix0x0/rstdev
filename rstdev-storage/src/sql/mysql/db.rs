@@ -1,3 +1,4 @@
+//! `db` is a module that provide an implementation of [`Storage`] and also [`SqlxConnectionBuilder`] 
 use std::sync::Arc;
 
 use rst_common::standard::async_trait::async_trait;
@@ -9,6 +10,7 @@ use crate::sql::mysql::options::Options;
 use crate::sql::types::{SqlxConnectionBuilder, SqlxOptionsBuilder, SqlxPoolOptionsBuilder};
 use crate::types::{Storage, StorageError};
 
+/// `DB` will depends to [`Options`] to setup it's database connection and also it's instance
 pub struct DB {
     opts: Options,
 }
@@ -45,6 +47,8 @@ impl SqlxConnectionBuilder for DB {
     }
 }
 
+/// `MysqlDB` is an object that implement [`Storage`], this object will depends to [`DB`] to build
+/// it's connection types, a common or pooled connections
 pub struct MysqlDB {
     db: DB,
     pub single_conn: Option<MySqlConnection>,

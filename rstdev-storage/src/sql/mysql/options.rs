@@ -1,3 +1,5 @@
+//! `options` used to manage all necessary options to setup Mysql database instance
+//! and connection
 use sqlx::mysql::{MySql, MySqlConnectOptions};
 use sqlx::pool::PoolOptions;
 
@@ -8,6 +10,12 @@ use crate::sql::types::{SqlxOptionsBuilder, SqlxPoolOptionsBuilder};
 
 const DEFAULT_PORT: u16 = 3306;
 
+/// `Options` will hold two kind of options, a main database options and pooled options
+/// 
+/// This object also implement [`SqlxOptionsBuilder`] to build common database options
+/// and also [`SqlxPoolOptionsBuilder`] to build pooled options.
+/// 
+/// For the pooled options, it will be used [`DefaultDBPoolOptionsBuilder`]
 pub struct Options {
     db_opts: DefaultDBOptions,
     pool_opts: DefaultDBPoolOptions,

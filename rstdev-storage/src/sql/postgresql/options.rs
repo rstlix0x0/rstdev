@@ -1,3 +1,5 @@
+//! `options` used to manage all necessary options to setup Postgres database instance
+//! and connection
 use sqlx::pool::PoolOptions;
 use sqlx::postgres::{PgConnectOptions, Postgres};
 
@@ -8,6 +10,12 @@ use crate::sql::types::{SqlxOptionsBuilder, SqlxPoolOptionsBuilder};
 
 const DEFAULT_PORT: u16 = 5432;
 
+/// `Options` will hold two kind of options, a main database options and pooled options
+/// 
+/// This object also implement [`SqlxOptionsBuilder`] to build common database options
+/// and also [`SqlxPoolOptionsBuilder`] to build pooled options.
+/// 
+/// For the pooled options, it will be used [`DefaultDBPoolOptionsBuilder`]
 pub struct Options {
     app_name: Option<String>,
     db_opts: DefaultDBOptions,

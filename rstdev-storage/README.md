@@ -21,3 +21,15 @@ Current supported storage implementations:
 [dependencies]
 rstdev-storage = {version = "0.1.0"}
 ```
+
+### Features
+
+- `mysql`, will only install and load base `sqlx` library with `runtime-tokio` and `mysql` enabled
+- `postgresql`, will only install and load baes `sqlx` library with `runtime-tokio` and `posgres` enabled
+
+Example:
+
+```toml
+[dependencies]
+rstdev-storage = {version = "0.1.0", features = ["mysql"]}
+```

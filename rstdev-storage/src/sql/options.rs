@@ -1,3 +1,5 @@
+//! `options` provides an implementation basic data structure to hold database main and pooled
+//! options
 use core::time::Duration;
 use std::marker::PhantomData;
 
@@ -6,6 +8,10 @@ use sqlx::Database;
 
 use crate::types::StorageError;
 
+/// `DefaultDBOptions` used as main and primary database options
+/// 
+/// This object struct also provide associated method to [`DefaultDBOptions::validate`] current
+/// given option fields
 #[derive(Debug, Clone)]
 pub struct DefaultDBOptions {
     pub host: Option<String>,
@@ -37,6 +43,11 @@ impl DefaultDBOptions {
     }
 }
 
+/// `DefaultDBPoolOptions` used to hold database pool options
+/// 
+/// Not all `sqlx` pool options defined here, I only set a necessary properties, and all of them
+/// are optional. Sqlx already give a default value for each option fields unless we also
+/// set them
 #[derive(Debug, Clone)]
 pub struct DefaultDBPoolOptions {
     pub max_conns: Option<u32>,
@@ -46,6 +57,10 @@ pub struct DefaultDBPoolOptions {
     pub acquire_timeout: Option<Duration>,
 }
 
+/// `DefaultDBPoolOptionsBuilder` this object used as default implementation of sqlx pool option builder
+/// 
+/// The motivatino of this object is used as shared object that will be able to be used between current
+/// Mysql and Postgres, rather than implement it manually to each of database instance
 pub struct DefaultDBPoolOptionsBuilder<TDB>
 where
     TDB: Database,
