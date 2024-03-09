@@ -1,12 +1,13 @@
 [package]
 name = "rstdev-config"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 rust-version = "1.74" 
 description = "A library to manage config from multiple source and formats"
 license = "Apache-2.0"
 keywords = ["libraries"]
 categories = ["development-tools"]
+documentation = "https://docs.rs/rst-common"
 repository = "https://github.com/rstlix0x0/rstdev/rstdev-config"
 readme = "README.md"
 

@@ -18,7 +18,7 @@ Current supported format types:
 
 ```toml
 [dependencies]
-rstdev-config = {version = "0.1.1"}
+rstdev-config = {version = "0.1.2"}
 ```
 
 ## Usages 
