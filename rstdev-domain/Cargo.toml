@@ -2,6 +2,14 @@
 name = "rstdev-domain"
 version = "0.1.0"
 edition = "2021"
+rust-version = "1.74" 
+description = "A library that provides base abstractions to working with Domain Driven Design (DDD) in Rust"
+license = "Apache-2.0"
+keywords = ["libraries"]
+categories = ["development-tools"]
+documentation = "https://docs.rs/rstdev-domain"
+repository = "https://github.com/rstlix0x0/rstdev/rstdev-domain"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

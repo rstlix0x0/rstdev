@@ -15,3 +15,10 @@ Current available traits only for three main blocks :
 > too many constraints, or even it's almost a zero constraints. By only providing
 > trait behaviors, user of this library will still be able to manage their business
 > domains 
+
+## Installation
+
+```toml
+[dependencies]
+rstdev-domain = {version = "0.1.0"}
+```
