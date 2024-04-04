@@ -4,5 +4,6 @@ resolver = "2"
 members = [
     "rstdev-config",
     "rstdev-domain",
-    "rstdev-storage"
+    "rstdev-storage",
+    "rstdev-cache"
 ]
