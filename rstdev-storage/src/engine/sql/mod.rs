@@ -1,5 +1,5 @@
 //! `sql` module provide basic implementation of `Storage` that build on top of `sqlx` library
-//! 
+//!
 //! For now it only support two types of sql databases:
 //! - Mysql
 //! - Postgres

@@ -1,13 +1,13 @@
-//! `db` is a module that provide an implementation of [`Storage`] and also [`SqlxConnectionBuilder`] 
+//! `db` is a module that provide an implementation of [`Storage`] and also [`SqlxConnectionBuilder`]
 use std::sync::Arc;
 
 use rst_common::standard::async_trait::async_trait;
 use sqlx::pool::Pool;
-use sqlx::Connection;
 use sqlx::postgres::{PgConnection, Postgres};
+use sqlx::Connection;
 
-use crate::sql::postgresql::options::Options;
-use crate::sql::types::{SqlxConnectionBuilder, SqlxOptionsBuilder, SqlxPoolOptionsBuilder};
+use crate::engine::sql::postgresql::options::Options;
+use crate::engine::sql::types::{SqlxConnectionBuilder, SqlxOptionsBuilder, SqlxPoolOptionsBuilder};
 use crate::types::{Storage, StorageError};
 
 /// `DB` will depends to [`Options`] to setup it's database connection and also it's instance

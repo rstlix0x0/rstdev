@@ -5,16 +5,16 @@ use sqlx::postgres::{PgConnectOptions, Postgres};
 
 use crate::types::StorageError;
 
-use crate::sql::options::{DefaultDBOptions, DefaultDBPoolOptions, DefaultDBPoolOptionsBuilder};
-use crate::sql::types::{SqlxOptionsBuilder, SqlxPoolOptionsBuilder};
+use crate::engine::sql::options::{DefaultDBOptions, DefaultDBPoolOptions, DefaultDBPoolOptionsBuilder};
+use crate::engine::sql::types::{SqlxOptionsBuilder, SqlxPoolOptionsBuilder};
 
 const DEFAULT_PORT: u16 = 5432;
 
 /// `Options` will hold two kind of options, a main database options and pooled options
-/// 
+///
 /// This object also implement [`SqlxOptionsBuilder`] to build common database options
 /// and also [`SqlxPoolOptionsBuilder`] to build pooled options.
-/// 
+///
 /// For the pooled options, it will be used [`DefaultDBPoolOptionsBuilder`]
 pub struct Options {
     app_name: Option<String>,
