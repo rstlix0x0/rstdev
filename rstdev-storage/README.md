@@ -6,10 +6,11 @@ external storages including for it's implementations.
 The main purpose of this library is to provide a base layer of abstraction
 that designed to be working side-by-side with the object that implement `Repository Pattern`.
 
-Current supported storage implementations:
+Current supported storage engines:
 
 - MySQL
 - Postgres
+- RocksDB
 
 > **INFO**
 >
@@ -19,17 +20,29 @@ Current supported storage implementations:
 
 ```toml
 [dependencies]
-rstdev-storage = {version = "0.1.0"}
+rstdev-storage = {version = "0.3.0"}
 ```
 
 ### Features
 
 - `mysql`, will only install and load base `sqlx` library with `runtime-tokio` and `mysql` enabled
-- `postgresql`, will only install and load baes `sqlx` library with `runtime-tokio` and `posgres` enabled
+- `postgresql`, will only install and load base `sqlx` library with `runtime-tokio` and `posgres` enabled
+- `rocksdb`, will only install and load engine implementation of `rust-rocksdb` 
 
 Example:
 
+Want to install `MySQL` (or `PostgreSQL`) engine implementation
+
 ```toml
 [dependencies]
-rstdev-storage = {version = "0.1.0", features = ["mysql"]}
+rstdev-storage = {version = "0.3.0", features = ["mysql"]}
+```
+
+---
+
+Want to install `RocksDB` engine implementation
+
+```toml
+[dependencies]
+rstdev-storage = {version = "0.3.0", features = ["rocksdb"]}
 ```

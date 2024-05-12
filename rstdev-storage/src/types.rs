@@ -1,4 +1,4 @@
-//! `types` module provides base data types structure which consists of [`Storage`] and 
+//! `types` module provides base data types structure which consists of [`Storage`] and
 //! [`StorageError`]
 
 use rst_common::standard::async_trait::async_trait;

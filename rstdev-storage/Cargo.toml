@@ -1,6 +1,6 @@
 [package]
 name = "rstdev-storage"
-version = "0.1.0"
+version = "0.3.0"
 edition = "2021"
 rust-version = "1.74" 
 description = "A library to manage external storage database instance and connection"
@@ -16,6 +16,7 @@ readme = "README.md"
 [dependencies]
 rst-common = {version = "1.1", features = ["with-errors", "with-tokio"]}
 sqlx = { version = "0.7", features = ["runtime-tokio"] }
+rust-rocksdb = {package = "rocksdb", version = "0.22.0", optional = true}
 
 [dev-dependencies]
 rst-common = {version = "1.1", features = ["with-tests"]}
@@ -23,6 +24,7 @@ rst-common = {version = "1.1", features = ["with-tests"]}
 [features]
 mysql = ["sqlx/mysql"]
 postgresql = ["sqlx/postgres"]
+rocksdb = ["dep:rust-rocksdb"]
 
 [lib]
 doctest = false
