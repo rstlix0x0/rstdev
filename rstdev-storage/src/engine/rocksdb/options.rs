@@ -1,9 +1,21 @@
+//! This module used to maintain all `RocksDB` database options including for 
+//! required `path` and `cf_name`. This options used with an assumption that 
+//! the caller will use `ColumnFamily` feature from `RocksDB`
 use rust_rocksdb::Options as CoreOptions;
 
 use super::types::RocksDBError;
 
+/// `OptionBuilderCallback` is an alias used to get given mutable `RocksDB` options
+/// used to change the option's properties
 pub type OptionBuilderCallback = fn(&mut CoreOptions) -> &mut CoreOptions;
 
+/// `Options` used to provides field properties. The required properties are:
+/// - `path`
+/// - `cf_name`
+/// 
+/// Actually the `db_opts` and `cf_opts` is required too, but when this object 
+/// build it will initialize with empty object (`None`), later the caller still need to 
+/// to build the object
 pub struct Options {
     pub(crate) path: String,
     pub(crate) cf_name: String,

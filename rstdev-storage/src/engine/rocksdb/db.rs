@@ -1,3 +1,5 @@
+//! This module provide a main object of [`DB`] which is an object that
+//! will maintain `RocksDB` object's instance
 use std::sync::Arc;
 
 use rust_rocksdb::ColumnFamilyDescriptor;
@@ -8,6 +10,8 @@ use crate::types::Storage;
 use super::options::Options;
 use super::types::RocksDBError;
 
+/// `DB` is a main object that depend on [`Options`] and used to build
+/// `RocksDB` database instance
 pub struct DB {
     opts: Options,
     db: Option<CoreDB>,

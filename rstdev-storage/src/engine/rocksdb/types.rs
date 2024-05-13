@@ -1,3 +1,5 @@
+//! This module only provide a very simple enum of [`RocksDBError`] that only contains
+//! two enum's keys
 use rst_common::with_errors::thiserror::{self, Error};
 
 #[derive(Debug, Error, PartialEq)]
