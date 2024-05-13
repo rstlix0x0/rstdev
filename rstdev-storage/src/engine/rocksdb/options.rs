@@ -5,10 +5,10 @@ use super::types::RocksDBError;
 pub type OptionBuilderCallback = fn(&mut CoreOptions) -> &mut CoreOptions;
 
 pub struct Options {
-    pub path: String,
-    pub cf_name: String,
-    pub db_opts: Option<CoreOptions>,
-    pub cf_opts: Option<CoreOptions>,
+    pub(crate) path: String,
+    pub(crate) cf_name: String,
+    pub(crate) db_opts: Option<CoreOptions>,
+    pub(crate) cf_opts: Option<CoreOptions>,
 }
 
 impl Options {
@@ -40,9 +40,15 @@ impl Options {
     }
 
     pub fn validate(&self) -> Result<(), RocksDBError> {
+        if self.path.is_empty() {
+            return Err(RocksDBError::ValidateError(
+                "db path is empty".to_string(),
+            ));
+        }
+
         if self.cf_name.is_empty() {
             return Err(RocksDBError::ValidateError(
-                "column family name not exists".to_string(),
+                "column family name is empty".to_string(),
             ));
         }
 
@@ -75,6 +81,19 @@ mod tests {
         assert!(!opts.is_err())
     }
 
+    #[test] 
+    fn test_validation_error_empty_path() {
+        let opts = Options::new("".to_string(), "cf-name".to_string())
+            .build_default_opts()
+            .validate();
+
+        assert!(opts.is_err());
+        assert!(opts
+            .unwrap_err()
+            .to_string()
+            .contains("db path is empty"))
+    }
+
     #[test]
     fn test_validation_error_empty_cf_name() {
         let opts = Options::new("./db".to_string(), "".to_string())
@@ -85,7 +104,7 @@ mod tests {
         assert!(opts
             .unwrap_err()
             .to_string()
-            .contains("column family name not exists"))
+            .contains("column family name is empty"))
     }
 
     #[test]
