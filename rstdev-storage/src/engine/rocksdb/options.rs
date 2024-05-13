@@ -41,9 +41,7 @@ impl Options {
 
     pub fn validate(&self) -> Result<(), RocksDBError> {
         if self.path.is_empty() {
-            return Err(RocksDBError::ValidateError(
-                "db path is empty".to_string(),
-            ));
+            return Err(RocksDBError::ValidateError("db path is empty".to_string()));
         }
 
         if self.cf_name.is_empty() {
@@ -81,17 +79,14 @@ mod tests {
         assert!(!opts.is_err())
     }
 
-    #[test] 
+    #[test]
     fn test_validation_error_empty_path() {
         let opts = Options::new("".to_string(), "cf-name".to_string())
             .build_default_opts()
             .validate();
 
         assert!(opts.is_err());
-        assert!(opts
-            .unwrap_err()
-            .to_string()
-            .contains("db path is empty"))
+        assert!(opts.unwrap_err().to_string().contains("db path is empty"))
     }
 
     #[test]
@@ -126,7 +121,7 @@ mod tests {
         let mut opts = Options::new("./db".to_string(), "cf-name".to_string());
         opts.build_default_opts();
         opts.cf_opts = None;
-        
+
         let validation = opts.validate();
         assert!(validation.is_err());
         assert!(validation
@@ -138,15 +133,15 @@ mod tests {
     #[test]
     fn test_set_db_opts_none() {
         let mut opts = Options::new("./db".to_string(), "cf-name".to_string());
-        opts.set_db_opts(|val| { val });
+        opts.set_db_opts(|val| val);
 
         assert!(opts.db_opts.is_none())
     }
 
-    #[test] 
+    #[test]
     fn test_set_cf_opts_none() {
         let mut opts = Options::new("./db".to_string(), "cf-name".to_string());
-        opts.set_cf_opts(|val| { val });
+        opts.set_cf_opts(|val| val);
 
         assert!(opts.cf_opts.is_none())
     }

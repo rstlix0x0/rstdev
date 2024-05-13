@@ -7,7 +7,9 @@ use sqlx::postgres::{PgConnection, Postgres};
 use sqlx::Connection;
 
 use crate::engine::sql::postgresql::options::Options;
-use crate::engine::sql::types::{SqlxConnectionBuilder, SqlxOptionsBuilder, SqlxPoolOptionsBuilder};
+use crate::engine::sql::types::{
+    SqlxConnectionBuilder, SqlxOptionsBuilder, SqlxPoolOptionsBuilder,
+};
 use crate::types::{Storage, StorageError};
 
 /// `DB` will depends to [`Options`] to setup it's database connection and also it's instance

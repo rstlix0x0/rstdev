@@ -5,7 +5,9 @@ use sqlx::postgres::{PgConnectOptions, Postgres};
 
 use crate::types::StorageError;
 
-use crate::engine::sql::options::{DefaultDBOptions, DefaultDBPoolOptions, DefaultDBPoolOptionsBuilder};
+use crate::engine::sql::options::{
+    DefaultDBOptions, DefaultDBPoolOptions, DefaultDBPoolOptionsBuilder,
+};
 use crate::engine::sql::types::{SqlxOptionsBuilder, SqlxPoolOptionsBuilder};
 
 const DEFAULT_PORT: u16 = 5432;
