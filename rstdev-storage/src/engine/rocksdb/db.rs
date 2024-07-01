@@ -13,8 +13,8 @@ use super::types::RocksDBError;
 /// `DB` is a main object that depend on [`Options`] and used to build
 /// `RocksDB` database instance
 pub struct DB {
+    pub db: Option<CoreDB>,
     opts: Options,
-    db: Option<CoreDB>,
 }
 
 impl DB {

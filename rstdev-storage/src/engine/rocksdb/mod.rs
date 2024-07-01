@@ -4,3 +4,7 @@
 pub mod db;
 pub mod options;
 pub mod types;
+
+pub mod rocksdb {
+    pub use rust_rocksdb;
+}
