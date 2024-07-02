@@ -44,5 +44,5 @@ Want to install `RocksDB` engine implementation
 
 ```toml
 [dependencies]
-rstdev-storage = {version = "0.3.2", features = ["rocksdb"]}
+rstdev-storage = {version = "0.3.3", features = ["rocksdb"]}
 ```

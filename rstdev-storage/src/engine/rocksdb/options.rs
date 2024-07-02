@@ -1,20 +1,16 @@
-//! This module used to maintain all `RocksDB` database options including for 
-//! required `path` and `cf_name`. This options used with an assumption that 
+//! This module used to maintain all `RocksDB` database options including for
+//! required `path` and `cf_name`. This options used with an assumption that
 //! the caller will use `ColumnFamily` feature from `RocksDB`
 use rust_rocksdb::Options as CoreOptions;
 
 use super::types::RocksDBError;
 
-/// `OptionBuilderCallback` is an alias used to get given mutable `RocksDB` options
-/// used to change the option's properties
-pub type OptionBuilderCallback = fn(&mut CoreOptions) -> &mut CoreOptions;
-
 /// `Options` used to provides field properties. The required properties are:
 /// - `path`
 /// - `cf_name`
-/// 
-/// Actually the `db_opts` and `cf_opts` is required too, but when this object 
-/// build it will initialize with empty object (`None`), later the caller still need to 
+///
+/// Actually the `db_opts` and `cf_opts` is required too, but when this object
+/// build it will initialize with empty object (`None`), later the caller still need to
 /// to build the object
 pub struct Options {
     pub(crate) path: String,
@@ -39,14 +35,20 @@ impl Options {
         self
     }
 
-    pub fn set_db_opts(&mut self, callback: OptionBuilderCallback) -> &mut Self {
-        let db_opts = self.db_opts.as_mut().map(|val| callback(val));
+    pub fn set_db_opts(
+        &mut self,
+        mut callback: impl FnMut(&mut CoreOptions) -> &mut CoreOptions,
+    ) -> &mut Self {
+        let db_opts = self.db_opts.as_mut().map(move |val| callback(val));
         self.db_opts = db_opts.cloned();
         self
     }
 
-    pub fn set_cf_opts(&mut self, callback: OptionBuilderCallback) -> &mut Self {
-        let cf_opts = self.cf_opts.as_mut().map(|val| callback(val));
+    pub fn set_cf_opts(
+        &mut self,
+        mut callback: impl FnMut(&mut CoreOptions) -> &mut CoreOptions,
+    ) -> &mut Self {
+        let cf_opts = self.cf_opts.as_mut().map(move |val| callback(val));
         self.cf_opts = cf_opts.cloned();
         self
     }

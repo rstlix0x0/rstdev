@@ -30,7 +30,7 @@ impl DB {
         // database instance already been setup it should not re-create
         // the instance anymore
         if self.db.is_some() {
-            return Ok(())
+            return Ok(());
         }
 
         let db_path = self.opts.path.clone();
