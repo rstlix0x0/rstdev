@@ -12,8 +12,9 @@ use super::types::RocksDBError;
 
 /// `DB` is a main object that depend on [`Options`] and used to build
 /// `RocksDB` database instance
+#[derive(Clone)]
 pub struct DB {
-    pub db: Option<CoreDB>,
+    pub db: Option<Arc<CoreDB>>,
     opts: Options,
 }
 
@@ -59,15 +60,15 @@ impl DB {
         let db = CoreDB::open_cf_descriptors(db_opts, db_path, vec![cf_descriptor])
             .map_err(|err| RocksDBError::InstanceError(err.to_string()))?;
 
-        self.db = Some(db);
+        self.db = Some(Arc::new(db));
         Ok(())
     }
 }
 
 impl Storage for DB {
-    type Instance = Arc<Self>;
+    type Instance = Self;
 
     fn get_instance(self) -> Self::Instance {
-        Arc::new(self)
+        self
     }
 }

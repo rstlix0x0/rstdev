@@ -12,6 +12,7 @@ use super::types::RocksDBError;
 /// Actually the `db_opts` and `cf_opts` is required too, but when this object
 /// build it will initialize with empty object (`None`), later the caller still need to
 /// to build the object
+#[derive(Clone)]
 pub struct Options {
     pub(crate) path: String,
     pub(crate) cf_name: String,
