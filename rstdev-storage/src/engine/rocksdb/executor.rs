@@ -3,6 +3,7 @@ use rst_common::with_tokio::tokio::task::spawn_blocking;
 use super::db::DB;
 use super::types::{Instruction, OutputOpts, RocksDBError};
 
+#[derive(Clone)]
 pub struct Executor {
     instance: DB,
     cf_name: String,
