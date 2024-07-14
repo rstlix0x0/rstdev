@@ -35,7 +35,7 @@ Want to install `MySQL` (or `PostgreSQL`) engine implementation
 
 ```toml
 [dependencies]
-rstdev-storage = {version = "0.3.0", features = ["mysql"]}
+rstdev-storage = {version = "0.3.6", features = ["mysql"]}
 ```
 
 ---
@@ -44,5 +44,5 @@ Want to install `RocksDB` engine implementation
 
 ```toml
 [dependencies]
-rstdev-storage = {version = "0.3.5", features = ["rocksdb"]}
+rstdev-storage = {version = "0.3.6", features = ["rocksdb"]}
 ```
