@@ -14,7 +14,7 @@ use super::types::RocksDBError;
 /// `RocksDB` database instance
 #[derive(Clone)]
 pub struct DB {
-    pub db: Option<Arc<CoreDB>>,
+    pub(crate) db: Option<Arc<CoreDB>>,
     opts: Options,
 }
 
@@ -27,11 +27,16 @@ impl DB {
         Ok(Self { opts, db: None })
     }
 
-    pub fn build(&mut self) -> Result<(), RocksDBError> {
+    pub fn set_db(&mut self, instance: Option<Arc<CoreDB>>) -> &mut Self {
+        self.db = instance;
+        self
+    }
+
+    pub fn build(&self) -> Result<Option<Arc<CoreDB>>, RocksDBError> {
         // database instance already been setup it should not re-create
         // the instance anymore
         if self.db.is_some() {
-            return Ok(());
+            return Ok(self.db.clone());
         }
 
         let db_path = self.opts.path.clone();
@@ -60,8 +65,8 @@ impl DB {
         let db = CoreDB::open_cf_descriptors(db_opts, db_path, vec![cf_descriptor])
             .map_err(|err| RocksDBError::InstanceError(err.to_string()))?;
 
-        self.db = Some(Arc::new(db));
-        Ok(())
+        let db_instance = Some(Arc::new(db));
+        Ok(db_instance)
     }
 }
 

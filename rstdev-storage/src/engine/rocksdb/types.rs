@@ -9,4 +9,26 @@ pub enum RocksDBError {
 
     #[error("instance error: {0}")]
     InstanceError(String),
+
+    #[error("executor error: {0}")]
+    ExecutorError(String),
+}
+
+pub enum Instruction {
+    SaveCf { key: String, value: Vec<u8> },
+    MergeCf { key: String, value: Vec<u8> },
+    GetCf { key: String },
+    MultiGetCf { keys: Vec<String> },
+    RemoveCf { key: String },
+}
+
+#[derive(Debug)]
+pub enum OutputOpts {
+    SingleByte {
+        value: Option<Vec<u8>>,
+    },
+    MultiBytes {
+        values: Vec<Result<Option<Vec<u8>>, RocksDBError>>,
+    },
+    None,
 }

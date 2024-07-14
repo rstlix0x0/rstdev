@@ -2,9 +2,10 @@
 //! of `rust-rocksdb` package
 
 pub mod db;
+pub mod executor;
 pub mod options;
 pub mod types;
 
-pub mod rocksdb {
+pub mod lib {
     pub use rust_rocksdb;
 }
