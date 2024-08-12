@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use crate::BaseError;
+use crate::types::BaseError;
 use crate::entity::UID;
 
 /// `Repository` is an trait abstraction used for `Repository Pattern` 
@@ -9,13 +9,15 @@ pub trait Repository {
     type UIDType: UID;
 
     fn find_by_uid(&self, uid: Self::UIDType) -> Result<Self::Entity, BaseError>;
-    fn save(&mut self, entity: Self::Entity) -> Result<(), BaseError>;
-    fn remove(&mut self, uid: Self::UIDType) -> Result<(), BaseError>;
+    fn create(&mut self, entity: Self::Entity) -> Result<(), BaseError>;
+    fn update_by_uid(&mut self, uid: Self::UIDType, entity: Self::Entity) -> Result<(), BaseError>;
+    fn remove_by_uid(&mut self, uid: Self::UIDType) -> Result<(), BaseError>;
 }
 
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
+    use std::string::ToString;
 
     use super::*;
 
@@ -30,6 +32,12 @@ mod tests {
         fn new() -> Self {
             let uid = uuid::Uuid::new_v4();            
             Self { uid: uid.to_string() }
+        }
+    }
+
+    impl ToString for FakeUID {
+        fn to_string(&self) -> String {
+            self.uid.to_owned()
         }
     }
 
@@ -76,13 +84,18 @@ mod tests {
             }
         }
 
-        fn remove(&mut self, uid: Self::UIDType) -> Result<(), BaseError> {
+        fn remove_by_uid(&mut self, uid: Self::UIDType) -> Result<(), BaseError> {
             self.db.remove(&uid.uid());
             Ok(())
         }
 
-        fn save(&mut self, entity: Self::Entity) -> Result<(), BaseError> {
+        fn create(&mut self, entity: Self::Entity) -> Result<(), BaseError> {
             self.db.insert(entity.uid.uid.to_string(), entity);
+            Ok(())
+        }
+
+        fn update_by_uid(&mut self, uid: Self::UIDType, entity: Self::Entity) -> Result<(), BaseError> {
+            self.db.insert(uid.to_string(), entity);
             Ok(())
         }
     }
@@ -92,14 +105,14 @@ mod tests {
         let mut repo = FakeRepo::new();
         let entity = FakeEntity::new();
 
-        let _ = repo.save(entity.clone());
+        let _ = repo.create(entity.clone());
         let entity_loaded = repo.find_by_uid(entity.clone().uid);
         assert!(!entity_loaded.is_err());
 
         let entity2 = entity_loaded.unwrap();
         assert_eq!(entity.uid.uid().to_owned(), entity2.uid.uid().to_owned());
 
-        let _ = repo.remove(entity.clone().uid);
+        let _ = repo.remove_by_uid(entity.clone().uid);
         let find_entity = repo.find_by_uid(entity.clone().uid);
         assert!(find_entity.is_err());
         assert!(matches!(find_entity.unwrap_err(), BaseError::RepositoryError(_)))

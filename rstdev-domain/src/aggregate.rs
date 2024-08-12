@@ -1,7 +1,7 @@
 /// `domain_event` is a module from `aggregate` used to manage domain's events
 /// by implementing `Observer Pattern`
 pub mod domain_event {
-    use crate::BaseError;
+    use crate::types::BaseError;
     
     use rst_common::standard::serde::Serialize;
 

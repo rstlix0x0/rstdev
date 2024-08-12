@@ -20,5 +20,5 @@ Current available traits only for three main blocks :
 
 ```toml
 [dependencies]
-rstdev-domain = {version = "0.1.0"}
+rstdev-domain = {version = "0.2.0"}
 ```
